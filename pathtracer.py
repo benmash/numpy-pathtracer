@@ -25,16 +25,17 @@ rays = np.dstack(
 
 for i in range(1000):
   d = sphereSDF(rays, 50, 50, 100, 25)
-  print(np.min(d))
+  # print(np.min(d))
   dir = (rays - cam)
-  dir /= np.sum(dir**2, axis=2, keepdims=True)
+  dir /= np.sum(dir**2, axis=2, keepdims=True)**0.5
   dir *= np.dstack([d]*3)
   rays += dir
 
-dist = np.linalg.norm(rays-cam, axis=2)
-dist /= np.max(dist)
-print(np.max(dist), np.min(dist))
+d = sphereSDF(rays, 50, 50, 100, 25)
+surface_filter  = d < 1e-5
+# d[surface_filter] = 0
+# d[~surface_filter] = 1
 
-plt.pcolormesh(dist)
+print(type(d))
+plt.imshow(d)
 plt.show()
-
